@@ -13,18 +13,48 @@ let STATE = {
 };
 
 /* ─── HEALTH CHECK ──────────────────────────────────── */
+const IS_LOCAL = window.location.hostname === 'localhost';
+
 async function checkHealth() {
-  const dot = document.getElementById('statusDot');
+  const dot   = document.getElementById('statusDot');
+  const envDt = document.getElementById('envDot');
+  const envTx = document.getElementById('envText');
+
+  // Set environment label
+  if (IS_LOCAL) {
+    envTx.textContent = 'Local Build';
+    envDt.style.background = '#E3B341';
+  } else {
+    envTx.textContent = 'Cloud · Render';
+    envDt.style.background = '#388BFD';
+  }
+
+  // Show waking up if cloud (Render free tier sleeps)
+  dot.textContent = IS_LOCAL ? 'API: checking...' : 'API: waking up...';
+  dot.style.color = '#E3B341';
+
   try {
-    const r = await fetch(`${API}/health`);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 12000); // 12s timeout
+    const r = await fetch(`${API}/health`, { signal: controller.signal });
+    clearTimeout(timer);
     const d = await r.json();
     if (d.status === 'ok') {
-      dot.textContent = `API: ${d.mode.toUpperCase()} · ${d.llm}`;
+      const provider = (d.llm || 'fireworks').toUpperCase();
+      const mode     = (d.mode || 'build').toUpperCase();
+      dot.textContent = `API: Online · ${provider}`;
       dot.style.color = '#3FB950';
-    } else throw new Error();
-  } catch {
-    dot.textContent = 'API: Offline';
-    dot.style.color = '#F85149';
+    } else throw new Error('not ok');
+  } catch (e) {
+    if (e.name === 'AbortError') {
+      dot.textContent = IS_LOCAL ? 'API: Offline' : 'API: Sleeping (retry...)';
+      dot.style.color = '#E3B341';
+      // Retry sooner if sleeping
+      setTimeout(checkHealth, 15000);
+    } else {
+      dot.textContent = 'API: Offline';
+      dot.style.color = '#F85149';
+    }
   }
 }
 
