@@ -11,7 +11,7 @@
 [![AWS DynamoDB](https://img.shields.io/badge/AWS-DynamoDB-FF9900?style=flat-square&logo=amazon-aws&logoColor=white)](https://aws.amazon.com/dynamodb/)
 [![Fireworks AI](https://img.shields.io/badge/Fireworks-DeepSeek--V4--Flash-6C3DB0?style=flat-square)](https://fireworks.ai)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Frontend](https://img.shields.io/badge/Frontend-Vercel-black?style=flat-square&logo=vercel&logoColor=white)](https://nexora-rag.vercel.app)
+[![Frontend](https://img.shields.io/badge/Frontend-Vercel-black?style=flat-square&logo=vercel&logoColor=white)](https://skillbridge-aws.vercel.app)
 [![Backend](https://img.shields.io/badge/Backend-Render-46E3B7?style=flat-square&logo=render&logoColor=black)](https://skillbridge-aws.onrender.com)
 
 > **AWS BUILD IT Track — First Commit Bharat Hackathon**
@@ -20,7 +20,7 @@
 
 | | Link |
 |--|------|
-| 🖥️ **Frontend App** | **[nexora-rag.vercel.app](https://nexora-rag.vercel.app)** |
+| 🖥️ **Frontend App** | **[skillbridge-aws.vercel.app](https://skillbridge-aws.vercel.app)** *(Mirror: [nexora-rag.vercel.app](https://nexora-rag.vercel.app))* |
 | ⚙️ **Backend API** | **[skillbridge-aws.onrender.com](https://skillbridge-aws.onrender.com)** |
 | 📖 **API Docs (Swagger)** | **[skillbridge-aws.onrender.com/docs](https://skillbridge-aws.onrender.com/docs)** |
 
