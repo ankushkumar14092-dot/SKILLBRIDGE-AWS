@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkillBridge — Engineering Career Readiness</title>
+  <meta name="description" content="SkillBridge AI: Turn job requirements into verified engineering evidence." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ─── HEADER ─────────────────────────────────────── -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="brand-badge">SKILLBRIDGE</span>
+      <span class="brand-sub">Career Readiness Engine</span>
+    </div>
+    <div class="topbar-status">
+      <span class="status-item font-mono"><span class="dot"></span> Local Build</span>
+      <span class="status-item font-mono" id="statusDot">API: checking...</span>
+    </div>
+  </div>
+</header>
+
+<!-- ─── HERO ───────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="tagline-kicker font-mono">AWS BUILD IT TRACK · FIRST COMMIT BHARAT</div>
+    <h1 class="hero-title">From claimed skills to demonstrated skills.</h1>
+    <p class="hero-desc">
+      Analyze real job descriptions, evaluate your existing code evidence, build targeted projects to close gaps, and generate immutable proof of skill.
+    </p>
+
+    <!-- Pipeline indicators -->
+    <div class="pipeline">
+      <span class="pipe-step active" id="fStep1">1. Analyze</span>
+      <span class="pipe-sep">→</span>
+      <span class="pipe-step" id="fStep2">2. Skill Graph</span>
+      <span class="pipe-step" id="fStep3">3. Build Task</span>
+      <span class="pipe-sep">→</span>
+      <span class="pipe-step" id="fStep4">4. Verification</span>
+      <span class="pipe-step" id="fStep5">5. Proof Records</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MAIN CONTENT ───────────────────────────────── -->
+<main class="container">
+
+  <!-- TAB SWITCHER: ANALYZE / CUSTOM PROJECT -->
+  <div class="view-tabs">
+    <button class="tab-btn active" id="tabAnalyzeBtn" onclick="switchView('analyze')">01 · Candidate Analysis</button>
+    <button class="tab-btn" id="tabProjectBtn" onclick="switchView('add-project')">02 · Add Custom Engineering Project</button>
+  </div>
+
+  <!-- SECTION: 1. CANDIDATE & ROLE ANALYSIS -->
+  <section class="card" id="secAnalyze">
+    <div class="card-header">
+      <h2 class="card-title">Target Role &amp; Candidate Credentials</h2>
+      <p class="card-caption">Provide your target role details, resume (or upload PDF/TXT), and GitHub credentials to benchmark evidence.</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="field">
+        <label for="userId">Candidate Identifier</label>
+        <input id="userId" type="text" placeholder="e.g. ankush_dev_01" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label for="targetRole">Target Role</label>
+        <input id="targetRole" type="text" placeholder="e.g. Backend Engineer Intern" />
+      </div>
+      <div class="field">
+        <label for="targetCompany">Target Company (Optional)</label>
+        <input id="targetCompany" type="text" placeholder="e.g. AWS, Razorpay" />
+      </div>
+      <div class="field">
+        <label for="githubUsername">GitHub Username</label>
+        <input id="githubUsername" type="text" placeholder="e.g. ankush-dev" autocomplete="off" />
+      </div>
+      <div class="field field-full">
+        <label for="githubToken">GitHub Personal Access Token (Optional - for private repos &amp; rate limits)</label>
+        <input id="githubToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx (used locally to inspect commits/AST)" autocomplete="off" />
+      </div>
+      
+      <div class="field field-full">
+        <label for="jobDescription">Target Job Description</label>
+        <textarea id="jobDescription" rows="4" placeholder="Paste requirements, tech stack, and responsibilities..."></textarea>
+      </div>
+
+      <!-- RESUME: TEXT + FILE UPLOAD -->
+      <div class="field field-full">
+        <div class="field-header-row">
+          <label for="resumeText">Candidate Resume Data</label>
+          <div class="file-upload-wrap">
+            <label class="btn-file-upload font-mono" for="resumeFileInput">
+              📎 Upload Resume (.txt, .md, .pdf)
+            </label>
+            <input type="file" id="resumeFileInput" accept=".txt,.md,.pdf" onchange="handleResumeUpload(event)" style="display:none;" />
+            <span id="fileNameLabel" class="file-name font-mono"></span>
+          </div>
+        </div>
+        <textarea id="resumeText" rows="4" placeholder="Paste resume plain text or click 'Upload Resume' above..."></textarea>
+      </div>
+    </div>
+
+    <div class="card-actions">
+      <button class="btn btn-primary" id="btnAnalyze" onclick="runAnalyze()">
+        Run Evidence Analysis
+      </button>
+    </div>
+    <div id="analyzeError" class="alert alert-error hidden"></div>
+  </section>
+
+  <!-- SECTION: ADD CUSTOM PROJECT (Requested by User) -->
+  <section class="card hidden" id="secAddProject">
+    <div class="card-header">
+      <h2 class="card-title">Define Custom Engineering Project</h2>
+      <p class="card-caption">Manually assign a practical project specification to target specific skill competencies.</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="field field-full">
+        <label for="custProjName">Project Title</label>
+        <input id="custProjName" type="text" placeholder="e.g. Distributed Task Queue with DynamoDB" />
+      </div>
+      <div class="field">
+        <label for="custProjHours">Estimated Effort (Hours)</label>
+        <input id="custProjHours" type="number" placeholder="e.g. 8" />
+      </div>
+      <div class="field">
+        <label for="custProjSkills">Targeted Skills (comma-separated)</label>
+        <input id="custProjSkills" type="text" placeholder="e.g. DynamoDB, Python, SQS, Testing" />
+      </div>
+      <div class="field field-full">
+        <label for="custProjDesc">Project Description &amp; Architecture</label>
+        <textarea id="custProjDesc" rows="3" placeholder="Describe the service architecture, data model, and engineering purpose..."></textarea>
+      </div>
+      <div class="field field-full">
+        <label for="custProjTasks">Key Verification Criteria / Deliverables (one per line)</label>
+        <textarea id="custProjTasks" rows="4" placeholder="1. Design DynamoDB single-table schema with PK/SK&#10;2. Implement CRUD REST endpoints&#10;3. Write pytest integration test suite"></textarea>
+      </div>
+    </div>
+
+    <div class="card-actions">
+      <button class="btn btn-primary" onclick="saveCustomProject()">
+        Save &amp; Target This Project
+      </button>
+    </div>
+  </section>
+
+  <!-- SECTION: 2. SKILL GRAPH & GAPS -->
+  <section class="card hidden" id="secGaps">
+    <div class="card-header">
+      <h2 class="card-title">Skill Graph &amp; Evidence Audit</h2>
+      <p class="card-caption">
+        Status breakdown: <span class="badge badge-dem font-mono">demonstrated</span> (code verified) · 
+        <span class="badge badge-clm font-mono">claimed</span> (resume only) · 
+        <span class="badge badge-gap font-mono">gap</span> (required but missing)
+      </p>
+    </div>
+    
+    <div id="skillProfileGrid" class="skill-grid"></div>
+
+    <div class="section-divider"></div>
+
+    <h3 class="subsection-title">Prioritized Competency Gaps</h3>
+    <div id="gapsList" class="gaps-table"></div>
+  </section>
+
+  <!-- SECTION: 3. ASSIGNED BUILD TASK -->
+  <section class="card hidden" id="secProject">
+    <div class="card-header">
+      <h2 class="card-title">Assigned Engineering Task</h2>
+      <p class="card-caption">Targeted project generated to satisfy required competency verification criteria.</p>
+    </div>
+    <div id="projectCard" class="project-block"></div>
+  </section>
+
+  <!-- SECTION: 4. SUBMISSION -->
+  <section class="card hidden" id="secSubmit">
+    <div class="card-header">
+      <h2 class="card-title">Repository Verification Submission</h2>
+      <p class="card-caption">Submit your public or token-authorized GitHub repository URL for automated code review, AST inspection, and test checks.</p>
+    </div>
+    <div class="field">
+      <label for="submissionUrl">Repository URL</label>
+      <input id="submissionUrl" type="text" placeholder="https://github.com/your-username/your-repo" />
+    </div>
+    <div class="card-actions" style="margin-top: 14px;">
+      <button class="btn btn-primary" id="btnSubmit" onclick="runSubmit()">
+        Submit for Automated Review
+      </button>
+    </div>
+    <div id="submitError" class="alert alert-error hidden"></div>
+  </section>
+
+  <!-- SECTION: 5. PROOF OF SKILL AUDIT -->
+  <section class="card hidden" id="secEvidence">
+    <div class="card-header">
+      <h2 class="card-title">Engineering Verification Report</h2>
+      <p class="card-caption">Immutable proof records stored in DynamoDB under Cedar authorization rules.</p>
+    </div>
+
+    <div id="reviewSummary" class="review-box"></div>
+    <div id="evidenceCards" class="evidence-grid"></div>
+
+    <div class="section-divider"></div>
+    <h3 class="subsection-title">Updated Demonstrated Profile</h3>
+    <div id="updatedProfile" class="skill-grid"></div>
+
+    <div class="section-divider"></div>
+    <h3 class="subsection-title">Next Recommended Action</h3>
+    <div id="nextAction" class="next-action-card"></div>
+  </section>
+
+</main>
+
+<!-- ─── CALM LOADING OVERLAY ───────────────────────── -->
+<div id="loadingOverlay" class="loading-modal hidden">
+  <div class="loading-dialog">
+    <div class="loader-line"></div>
+    <div class="loading-header">
+      <span class="loading-label font-mono">AGENT EXECUTION</span>
+      <h4 class="loading-title" id="loadingTitle">Processing requirements...</h4>
+    </div>
+    <div class="loading-steps font-mono" id="loadingSteps"></div>
+  </div>
+</div>
+
+<!-- ─── FOOTER ─────────────────────────────────────── -->
+<footer class="footer font-mono">
+  <div class="footer-inner">
+    <span>SkillBridge AI · AWS First Commit Hackathon (BUILD IT Track)</span>
+    <div class="footer-links">
+      <span>Strands Agents</span>
+      <span>Cedar</span>
+      <span>LocalStack</span>
+      <a href="http://localhost:8000/docs" target="_blank" class="link">API Docs</a>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
