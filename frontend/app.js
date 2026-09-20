@@ -2,7 +2,9 @@
    SkillBridge — Frontend Logic
    ═════════════════════════════════════════════════════════ */
 
-const API = 'http://localhost:8000';
+const API = window.location.hostname === 'localhost'
+  ? 'http://localhost:8000'
+  : 'https://skillbridge-aws.onrender.com';
 let STATE = {
   threadId: null,
   userId: null,
