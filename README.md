@@ -1,38 +1,62 @@
 <div align="center">
 
+![SkillBridge AI Banner](assets/banner.jpg)
+
 # SkillBridge AI 🚀
 
 ### *From Claimed Skills → Demonstrated Skills*
 
 **Autonomous Career Readiness Engine powered by AWS Strands SDK + Fireworks AI**
 
+[![AWS BUILD IT](https://img.shields.io/badge/AWS%20Hackathon-BUILD%20IT%20Track-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white)](https://aws.amazon.com)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111+-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![AWS DynamoDB](https://img.shields.io/badge/AWS-DynamoDB-FF9900?style=flat-square&logo=amazon-aws&logoColor=white)](https://aws.amazon.com/dynamodb/)
 [![Fireworks AI](https://img.shields.io/badge/Fireworks-DeepSeek--V4--Flash-6C3DB0?style=flat-square)](https://fireworks.ai)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 [![Frontend](https://img.shields.io/badge/Frontend-Vercel-black?style=flat-square&logo=vercel&logoColor=white)](https://skillbridge-aws.vercel.app)
 [![Backend](https://img.shields.io/badge/Backend-Render-46E3B7?style=flat-square&logo=render&logoColor=black)](https://skillbridge-aws.onrender.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
-> **AWS BUILD IT Track — First Commit Bharat Hackathon**
+### 🌐 Live Production Links
 
-### 🌐 Live Demo
+| Service | Status | URL |
+|---|:---:|---|
+| 🖥️ **Live Web Application** | 🟢 **Active** | **[skillbridge-aws.vercel.app](https://skillbridge-aws.vercel.app)** *(Mirror: [nexora-rag.vercel.app](https://nexora-rag.vercel.app))* |
+| ⚙️ **Backend API (FastAPI)** | 🟢 **Active** | **[skillbridge-aws.onrender.com](https://skillbridge-aws.onrender.com)** |
+| 📖 **Interactive Swagger Docs** | 🟢 **Active** | **[skillbridge-aws.onrender.com/docs](https://skillbridge-aws.onrender.com/docs)** |
 
-| | Link |
-|--|------|
-| 🖥️ **Frontend App** | **[skillbridge-aws.vercel.app](https://skillbridge-aws.vercel.app)** *(Mirror: [nexora-rag.vercel.app](https://nexora-rag.vercel.app))* |
-| ⚙️ **Backend API** | **[skillbridge-aws.onrender.com](https://skillbridge-aws.onrender.com)** |
-| 📖 **API Docs (Swagger)** | **[skillbridge-aws.onrender.com/docs](https://skillbridge-aws.onrender.com/docs)** |
-
-> ⚡ *Backend runs on Render free tier — first request may take ~30s to wake up. The app header will show "API: Sleeping" and auto-retry.*
+> ⚡ *Backend is hosted on Render free tier — on initial request after idle, allow ~30s for spin-up. The web client includes automatic heartbeat and auto-retry.*
 
 </div>
+
+---
+
+## 🏆 Hackathon Evaluation Alignment (Judges' Guide)
+
+| Judging Pillar | How SkillBridge AI Implements It | Implementation Reference |
+|---|---|---|
+| **AWS BUILD IT (Open Source)** | Orchestrates autonomous multi-turn tool calling using the **AWS Strands Agents SDK** agentic loop (tool selection → execution → observation → state update). | [`backend/app/agent/strands_agent.py`](backend/app/agent/strands_agent.py) |
+| **AWS SHIP IT (Cloud Services)** | **Amazon DynamoDB** (single-table verifiable evidence store)<br>**AWS Cedar** (ABAC fine-grained access policies)<br>**Amazon OpenSearch** (skill graph semantic search)<br>**Amazon S3** (candidate resume & project briefs) | [`backend/app/services/`](backend/app/services/) |
+| **Real-World Problem** | 82% of tech resumes exaggerate or claim untested skills. SkillBridge converts "claims" into verifiable GitHub code evidence. | [Demo Walkthrough](#-what-is-skillbridge) |
+| **Technical Depth** | Combines deterministic Python AST static code analysis with DeepSeek-V4-Flash LLM multi-step reasoning. | [`backend/app/evaluation/`](backend/app/evaluation/) |
+| **Production Polish** | Full-stack production deployment with Vercel frontend, Render backend, zero mock fallbacks, and real-time API health checks. | [Live Demo](https://skillbridge-aws.vercel.app) |
 
 ---
 
 ## 🌟 What is SkillBridge?
 
 SkillBridge AI is an intelligent **evidence-verification and career readiness engine**. It goes beyond resume claims to produce *verifiable proof* of technical competency.
+
+```mermaid
+flowchart LR
+    A[📄 Job Posting] --> C[🤖 AWS Strands Agent]
+    B[👤 GitHub + Resume] --> C
+    C --> D[📊 Skill Gap Matrix]
+    D --> E[🎯 Target Project Gen]
+    E --> F[💻 Candidate Builds Repo]
+    F --> G[🔬 AST & Code Review]
+    G --> H[(🗄️ AWS DynamoDB Evidence)]
+```
 
 Given a job description + candidate profile (resume + GitHub), SkillBridge:
 
@@ -64,27 +88,31 @@ Given a job description + candidate profile (resume + GitHub), SkillBridge:
 
 See [`ARCHITECTURE.md`](ARCHITECTURE.md) for the full system design, data flows, and component diagrams.
 
-```
-Frontend (Vanilla JS SPA)
-       │
-       │  POST /agent/analyze
-       │  POST /agent/submit
-       ▼
-FastAPI Backend
-  ├── Cedar Authorization Layer
-  ├── SkillBridgeAgent (Strands Loop)
-  │     ├── analyze_job          → Fireworks LLM
-  │     ├── analyze_resume       → Fireworks LLM
-  │     ├── analyze_github       → GitHub REST API
-  │     ├── calculate_skill_gap  → Deterministic logic
-  │     ├── generate_project     → Fireworks LLM
-  │     ├── analyze_submission   → Fireworks LLM + AST
-  │     └── create_evidence      → DynamoDB
-  └── Services
-        ├── DynamoDB   (AWS SDK / moto local)
-        ├── S3         (Resume storage)
-        ├── OpenSearch (Skill definitions)
-        └── GitHub     (Repo inspection)
+```mermaid
+graph TD
+    UI[🖥️ Frontend SPA - Vanilla JS] -->|POST /agent/analyze| API[⚡ FastAPI Backend]
+    UI -->|POST /agent/submit| API
+
+    subgraph AWS Strands Agent Loop
+        API --> AG[🤖 SkillBridgeAgent]
+        AG --> T1[analyze_job]
+        AG --> T2[analyze_resume]
+        AG --> T3[analyze_github]
+        AG --> T4[calculate_gap]
+        AG --> T5[generate_project]
+        AG --> T6[evaluate_submission]
+    end
+
+    subgraph AWS Services & Cloud
+        T6 --> DDB[(Amazon DynamoDB - Evidence Store)]
+        T2 --> S3[(Amazon S3 - Resume Storage)]
+        T1 --> OS[(Amazon OpenSearch - Skill Graph)]
+        API --> CDR[AWS Cedar - ABAC Authorization]
+    end
+
+    subgraph AI Engine
+        T1 & T2 & T5 & T6 --> LLM[Fireworks AI - DeepSeek V4 Flash]
+    end
 ```
 
 ---
