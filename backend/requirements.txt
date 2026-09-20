@@ -1,7 +1,24 @@
-fastapi>=0.100.0
-uvicorn>=0.22.0
+# Web framework
+fastapi>=0.111.0
+uvicorn[standard]>=0.22.0
+python-multipart>=0.0.9
+
+# AWS
 boto3>=1.28.0
-moto>=4.2.0
+moto[dynamodb,s3]>=4.2.0
+mangum>=0.17.0
+
+# HTTP
 requests>=2.31.0
+httpx>=0.25.0
+
+# AI / Agent
+langgraph>=0.1.0
+strands-agents>=0.1.0
+
+# Search
+opensearch-py>=2.3.0
+
+# Utils
 python-dotenv>=1.0.0
 pydantic>=2.0.0
